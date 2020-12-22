@@ -80,26 +80,25 @@ trait InteractsWithWebsocket
      */
     public function onOpen($ws, $request)
     {
-        $data = $request->get;
-        $user_id = $data['user_id'];
-        $IM = new IM();
-        $IM->on($fd,$user_id,$data);
-        $arr_get = $request->get;
-        $token = $arr_get['token'];
+//        $from_user = DatabaseTable::table('im_online')->get('wu_88');
+//        var_dump($from_user);
 
 
-    /*    $request->fd;//客户端id
-        $request->header;//
-        $request->server;//
-        $request->cookie;//
-        $request->get;//get参数
-        $request->files;//
-        $request->post;//post参数
-        $request->tmpfiles;//*/
-        var_dump($request->fd, $request);
-//        var_dump('-----');
-//        var_dump(Request::input());
-        $ws->push($request->fd, "hello, welcome\n");
+        /*    $request->fd;//客户端id
+            $request->header;//
+            $request->server;//
+            $request->cookie;//
+            $request->get;//get参数
+            $request->files;//
+            $request->post;//post参数
+            $request->tmpfiles;//*/
+        try {
+            wswoole_push($ws,$request->fd,wswoole_success('connect success!',[],'connect'));
+        }
+        catch (\Exception $exception) {
+            echo '失败';
+//            return yoo_hello_fail('失败',$exception->getMessage());
+        }
     }
 
     /**
@@ -110,16 +109,23 @@ trait InteractsWithWebsocket
      */
     public function onMessage($ws, $frame)
     {
-        $arr_data = [
-            'from_id'=>1,
-            'to_id'=>2,
-            'type'=>'message',//message-信息 video-视频 voice-语音 image-图片 goods-商品
-            'event'=>'chat',//chat-聊天 chat_room-聊天室 chat_group-群组 broadcast-广播
-            'content'=>null,
-        ];
+//        try {
+            $data = json_decode($frame->data,true);
+            $fd = $frame->fd;//客户端id
+            $IM = new IM();
+            $result = $IM->im_event($ws,$fd, $data);
+//        }
+//        catch (\Exception $exception) {
+//            echo '失败';
+            //            return yoo_hello_fail('失败',$exception->getMessage());
+//        }
 
-        echo "Message: {$frame->data}\n";
-        $ws->push($frame->fd, "server: {$frame->data}");
+//
+//        //错误 给客户端发送通知
+//        if($result['code'] != 200){
+//            $ws->push($frame->fd, $result['msg']);
+//        }
+
     }
 
     /**
@@ -131,7 +137,14 @@ trait InteractsWithWebsocket
      */
     public function onClose($ws, $fd)
     {
-        echo "client-{$fd} is closed\n";
+        try {
+            wswoole_push($ws,$request->fd,wswoole_success("client-{$fd} is closed",[],'close'));
+        }
+        catch (\Exception $exception) {
+            echo '失败';
+            //            return yoo_hello_fail('失败',$exception->getMessage());
+        }
+//        echo "client-{$fd} is closed";
     }
 
 //    /**

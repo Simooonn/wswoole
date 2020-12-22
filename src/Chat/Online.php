@@ -6,20 +6,39 @@ use HashyooSwoole\Facades\DatabaseTable;
 
 trait Online
 {
-//    private $table = null;
+    /************* 上线 *************/
 
     /*连接*/
-    public function on($fd,$user_id,$data = []){
-        $arr_data = ['fd'=>$fd];
-        $arr_data = array_merge($arr_data,$data);
-       return DatabaseTable::table('im_online')->set($user_id,$arr_data);
+    public function online($ws,$fd,$user_id = '',$data = []){
+        $arr_data = [
+            'fd'=>$fd,
+            'user_id'=>$user_id,
+            'nickname'=>yoo_string_trim($data['nickname']),
+            'avatar'=>yoo_string_trim($data['avatar']),
+            'status'=>'online',
+        ];
+        $result = DatabaseTable::table('im_online')->set($user_id,$arr_data);
+
+        if($result){
+            $result =  wswoole_success("online success!",[],'online');
+        }
+        else{
+            $result =  wswoole_error('online fail!!!',[],'online');
+        }
+        wswoole_push($ws,$fd,$result);
+        return $result;
     }
 
-    /*断开*/
+
+    /* 退出 */
     public function leave(){
-        $arr_data = ['fd'=>0,'fd'=>0];
-        $arr_data = array_merge($arr_data,$data);
-        return DatabaseTable::table('im_online')->set($user_id,$arr_data);
+        $arr_data = [
+            'fd'=>0,
+            'user_id'=>$user_id,
+            'status'=>'offline',
+        ];
+        $result = DatabaseTable::table('im_online')->set($user_id,$arr_data);
+        return $result;
     }
 
 

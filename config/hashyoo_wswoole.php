@@ -137,10 +137,10 @@ return [
             'size' => 32768,// pow(2,15) 2的15次方
             'columns' => [
                 ['name' => 'fd', 'type' => 'int', 'size' => 4],
-                ['name' => 'user_id', 'type' => 'int', 'size' => 4],
-//                ['name' => 'nickname', 'type' => 'string', 'size' => 50],//昵称
-//                ['name' => 'avatar', 'type' => 'string', 'size' => 300],//头像
-//                ['name' => 'status', 'type' => 'string', 'size' => 10],//online-在线 offline-离线
+                ['name' => 'user_id', 'type' => 'string', 'size' => 50],
+                ['name' => 'nickname', 'type' => 'string', 'size' => 50],//昵称
+                ['name' => 'avatar', 'type' => 'string', 'size' => 300],//头像
+                ['name' => 'status', 'type' => 'string', 'size' => 10],//online-在线 offline-离线
             ]
         ],
     ],

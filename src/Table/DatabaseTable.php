@@ -23,7 +23,7 @@ class DatabaseTable
      * @return bool
      * @author wumengmeng <wu_mengmeng@foxmail.com>
      */
-    public function set(string $key, array $value):bool
+    public function set($key = '', $value = []):bool
     {
         if(is_null($this->table)){
             return false;

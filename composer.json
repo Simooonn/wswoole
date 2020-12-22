@@ -1,50 +1,51 @@
 {
-  "name": "hashyoo/wswoole",
-  "description": "laravel swoole集成，",
-  "keywords": [
-    "swoole",
-    "laravel"
-  ],
-  "license": "MIT",
-  "authors": [
-      {
-          "name": "damon",
-          "email": "644577519@qq.com"
-      }
-  ],
-  "require": {
-    "php": "^7.2",
-    "illuminate/console": "~5.4|~6.0|~7.0|~8.0",
-    "illuminate/contracts": "~5.4|~6.0|~7.0|~8.0",
-    "illuminate/http": "~5.4|~6.0|~7.0|~8.0",
-    "illuminate/support": "~5.4|~6.0|~7.0|~8.0",
-    "predis/predis": "^1.1"
-  },
-
-  "autoload": {
-    "files": [
-        "src/Config/helpers.php",
-        "src/Server/helpers.php"
+    "name": "hashyoo/wswoole",
+    "description": "laravel swoole集成，",
+    "keywords": [
+        "swoole",
+        "laravel"
     ],
-    "psr-4": {
-      "HashyooSwoole\\": "src"
-    }
-  },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "damon",
+            "email": "644577519@qq.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2",
+        "illuminate/console": "~5.4|~6.0|~7.0|~8.0",
+        "illuminate/contracts": "~5.4|~6.0|~7.0|~8.0",
+        "illuminate/http": "~5.4|~6.0|~7.0|~8.0",
+        "illuminate/support": "~5.4|~6.0|~7.0|~8.0",
+        "jenssegers/mongodb": "^3.6",
+        "predis/predis": "^1.1"
+    },
 
-  "extra": {
-    "laravel": {
-      "providers": [
-        "HashyooSwoole\\LaravelServiceProvider"
-      ],
-      "aliases": {
-        "Server": "HashyooSwoole\\Server\\Facades\\Server",
-        "Table": "HashyooSwoole\\Server\\Facades\\Table",
-        "Room": "HashyooSwoole\\Websocket\\Facades\\Room",
-        "Websocket": "HashyooSwoole\\Websocket\\Facades\\Websocket"
-      }
-    }
-  },
-  "scripts": {
+    "autoload": {
+        "files": [
+            "src/Config/helpers.php",
+            "src/Server/helpers.php"
+        ],
+        "psr-4": {
+            "HashyooSwoole\\": "src"
+        }
+    },
 
-  }
+    "extra": {
+        "laravel": {
+            "providers": [
+                "HashyooSwoole\\LaravelServiceProvider"
+            ],
+            "aliases": {
+                "Server": "HashyooSwoole\\Server\\Facades\\Server",
+                "Table": "HashyooSwoole\\Server\\Facades\\Table",
+                "Room": "HashyooSwoole\\Websocket\\Facades\\Room",
+                "Websocket": "HashyooSwoole\\Websocket\\Facades\\Websocket"
+            }
+        }
+    },
+    "scripts": {
+
+    }
 }

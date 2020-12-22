@@ -3,6 +3,7 @@
 namespace HashyooSwoole\Concerns;
 
 use Illuminate\Contracts\Console\Application as ConsoleApp;
+use Illuminate\Support\Facades\App;
 use Swoole\Table;
 use HashyooSwoole\Table\SwooleTable;
 
@@ -26,7 +27,7 @@ trait InteractsWithSwooleTable
     protected function createTables()
     {
         $this->currentTable = new SwooleTable;
-//        $this->registerTables();
+        $this->registerTables();
     }
 
     /**
@@ -71,12 +72,18 @@ trait InteractsWithSwooleTable
      */
     protected function bindSwooleTable()
     {
-        if (! $this->app instanceof ConsoleApp) {
-            $this->app->singleton(SwooleTable::class, function () {
-                return $this->currentTable;
-            });
-
-            $this->app->alias(SwooleTable::class, 'swoole.table');
-        }
+        $a = App::singleton(SwooleTable::class, function () {
+            return $this->currentTable;
+        });
+        App::alias(SwooleTable::class, 'swoole.table');
+//        $this->app = new ConsoleApp();
+//        var_dump($this->app);die;
+//        if (! $this->app instanceof ConsoleApp) {
+//            $this->app->singleton(SwooleTable::class, function () {
+//                return $this->currentTable;
+//            });
+//
+//            $this->app->alias(SwooleTable::class, 'swoole.table');
+//        }
     }
 }
