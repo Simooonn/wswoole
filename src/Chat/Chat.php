@@ -39,36 +39,35 @@ trait Chat
         }
         $arr_data = $data;
 
+        //给对方发送消息
         $data['from_user'] = $from_user;
         $data['to_user'] = $to_user;
+
+
+        /* 更新会话 */
+        // 1-更新发送方会话
+        $send_conversation_id = md5('two_'.$from_uid.'_'.$to_uid);
+        $arr_where = ['conversation_id'=>$send_conversation_id];
+        $arr_data_conver = ['data'=>$arr_data,'user_id'=>$from_uid];
+        $result = MongoConversation::UpdateOrCreate($arr_where,$arr_data_conver);
+
+        // 2-更新接收方会话
+        $receive_conversation_id = md5('two_'.$to_uid.'_'.$from_uid);
+        $arr_where = ['conversation_id'=>$receive_conversation_id];
+        $arr_data_conver = ['data'=>$arr_data,'user_id'=>$to_uid];
+        $result = MongoConversation::UpdateOrCreate($arr_where,$arr_data_conver);
+
+        /* 添加消息记录 */
+        // 1-添加发送方消息记录
+        $arr_data['conversation_id'] = $send_conversation_id;
+        $result = MongoChatMessage::create($arr_data);
+
+        // 2-添加接收方消息记录
+        $arr_data['conversation_id'] = $receive_conversation_id;
+        $result = MongoChatMessage::create($arr_data);
+
         $result = wswoole_push($ws,$to_fd,wswoole_success('发送成功',$data,'chat'));
-        if($result){
-            /* 更新会话 */
-            // 1-更新发送方会话
-            $send_conversation_id = md5('two_'.$from_uid.'_'.$to_uid);
-            $arr_where = ['conversation_id'=>$send_conversation_id];
-            $arr_data_conver = ['data'=>$arr_data,'user_id'=>$from_uid];
-            $result = MongoConversation::UpdateOrCreate($arr_where,$arr_data_conver);
-
-            // 2-更新接收方会话
-            $receive_conversation_id = md5('two_'.$to_uid.'_'.$from_uid);
-            $arr_where = ['conversation_id'=>$receive_conversation_id];
-            $arr_data_conver = ['data'=>$arr_data,'user_id'=>$to_uid];
-            $result = MongoConversation::UpdateOrCreate($arr_where,$arr_data_conver);
-
-            /* 添加消息记录 */
-            // 1-添加发送方消息记录
-            $arr_data['conversation_id'] = $send_conversation_id;
-            $result = MongoChatMessage::create($arr_data);
-
-            // 2-添加接收方消息记录
-            $arr_data['conversation_id'] = $receive_conversation_id;
-            $result = MongoChatMessage::create($arr_data);
-            
-            return wswoole_success("发送成功");
-
-        }
-        return wswoole_error("发送失败");
+        return wswoole_success("发送成功");
 
     }
 

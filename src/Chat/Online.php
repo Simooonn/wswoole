@@ -20,10 +20,10 @@ trait Online
         $result = DatabaseTable::table('im_online')->set($user_id,$arr_data);
 
         if($result){
-            $result =  wswoole_success("online success!",[],'online');
+            $result =  wswoole_success("online success!",[],'user-online');
         }
         else{
-            $result =  wswoole_error('online fail!!!',[],'online');
+            $result =  wswoole_error('online fail!!!',[],'user-online');
         }
         wswoole_push($ws,$fd,$result);
         return $result;

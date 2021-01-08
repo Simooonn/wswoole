@@ -109,16 +109,16 @@ trait InteractsWithWebsocket
      */
     public function onMessage($ws, $frame)
     {
-//        try {
+        try {
             $data = json_decode($frame->data,true);
             $fd = $frame->fd;//客户端id
             $IM = new IM();
             $result = $IM->im_event($ws,$fd, $data);
-//        }
-//        catch (\Exception $exception) {
-//            echo '失败';
-            //            return yoo_hello_fail('失败',$exception->getMessage());
-//        }
+        }
+        catch (\Exception $exception) {
+            echo '失败';
+//            return yoo_hello_fail('失败',$exception->getMessage());
+        }
 
 //
 //        //错误 给客户端发送通知

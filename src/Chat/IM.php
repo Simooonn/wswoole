@@ -26,6 +26,8 @@ class IM
      */
 
     public function im_event($ws,$fd, $data){
+        $data['from_uid'] = (string) $data['from_uid'];
+        $data['to_uid'] = (string) $data['to_uid'];
         $from_uid = $data['from_uid'];
         $to_uid = $data['to_uid'];
         $conversation_id = $data['conversation_id'];
@@ -60,13 +62,13 @@ class IM
                 $result = $this->conversation_list($ws,$fd,$from_uid);
                 break;
             case 'conversation-chat_history'://会话-聊天记录
-                $result = $this->conversation_chat_history($ws,$fd,$from_uid,$conversation_id,$data);
+                $result = $this->conversation_chat_history($ws,$fd,$from_uid,$to_uid,$conversation_id,$data);
                 break;
             case 'conversation-read'://会话已读
-                $result = $this->conversation_read($ws,$fd,$from_uid,$conversation_id);
+                $result = $this->conversation_read($ws,$fd,$from_uid,$to_uid,$conversation_id);
                 break;
             case 'conversation-del'://删除会话
-                $result = $this->del_conversation($ws,$fd,$from_uid,$conversation_id);
+                $result = $this->conversation_del($ws,$fd,$from_uid,$to_uid,$conversation_id);
                 break;
             default:
                 $result = wswoole_error('unknown error',[],'other');

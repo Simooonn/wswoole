@@ -15,7 +15,8 @@ trait Conversation
         $from_user = DatabaseTable::table('im_online')->get($from_uid);
 
         //获取用户会话列表
-        $result = MongoConversation::where('user_id',$from_uid)->orderBy('created_at','desc')->get()->toarray();
+        $result = MongoConversation::where('user_id',(string)$from_uid)->orderBy('updated_at','desc')->get()->toarray();
+
         foreach ($result as &$value)
         {
             if($value['data']['from_uid'] == $from_uid){
@@ -35,19 +36,23 @@ trait Conversation
             $value['not_read_num'] = MongoChatMessage::where($arr_where)->count();
         }
 
-        $rrrrr = wswoole_success('获取成功',$result,'conversation_list');
+        $rrrrr = wswoole_success('获取成功',$result,'conversation-list');
         $result = wswoole_push($ws,$fd,$rrrrr);
         if($result){
             return $rrrrr;
         }
         else{
-            return wswoole_error('获取失败',[],'conversation_list');
+            return wswoole_error('获取失败',[],'conversation-list');
         }
 
     }
 
     /*会话-聊天记录*/
-    public function conversation_chat_history($ws,$fd,$from_uid,$conversation_id,$data = []){
+    public function conversation_chat_history($ws,$fd,$from_uid,$to_uid,$conversation_id,$data = []){
+        if(empty($conversation_id)){
+            $conversation_id = md5('two_'.$from_uid.'_'.$to_uid);
+        }
+
         $page = $data['page'];
         $from_user = DatabaseTable::table('im_online')->get($from_uid);
 
@@ -72,33 +77,40 @@ trait Conversation
             }
         }
 
-        $rrrrr = wswoole_success('获取成功',$result,'chat_history');
+        $rrrrr = wswoole_success('获取成功',$result,'conversation-chat_history');
         $result = wswoole_push($ws,$fd,$rrrrr);
         if($result){
             return $rrrrr;
         }
         else{
-            return wswoole_error('获取失败',[],'chat_history');
+            return wswoole_error('获取失败',[],'conversation-chat_history');
         }
 
     }
 
     /*会话已读*/
-    public function conversation_read($ws,$fd,$from_uid,$conversation_id){
+    public function conversation_read($ws,$fd,$from_uid,$to_uid,$conversation_id){
+        if(empty($conversation_id)){
+            $conversation_id = md5('two_'.$from_uid.'_'.$to_uid);
+        }
         $arr_where = [
             'conversation_id'=>$conversation_id,
             'to_uid'=>$from_uid,
             'to_is_read'=>false,
         ];
         MongoChatMessage::where($arr_where)->update(['to_is_read'=>true]);
-        $rrrrr = wswoole_success('已读成功',[],'conversation_read');
+        $rrrrr = wswoole_success('已读成功',[],'conversation-read');
         return $rrrrr;
 
 
     }
 
     /*删除会话（删除会话时会清空会话里整个聊天记录）*/
-    public function del_conversation($ws,$fd,$from_uid,$conversation_id){
+    public function conversation_del($ws,$fd,$from_uid,$to_uid,$conversation_id){
+        if(empty($conversation_id)){
+            $conversation_id = md5('two_'.$from_uid.'_'.$to_uid);
+        }
+
         //删除会话
         $arr_where = [
             'conversation_id'=>$conversation_id,
@@ -111,7 +123,7 @@ trait Conversation
             'conversation_id'=>$conversation_id,
         ];
         MongoChatMessage::where($arr_where)->delete();
-        $rrrrr = wswoole_success('删除成功',[],'conversation_del');
+        $rrrrr = wswoole_success('删除成功',[],'conversation-del');
         return $rrrrr;
     }
 
